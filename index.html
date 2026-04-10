@@ -1,360 +1,313 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fang.wtf</title>
+<title>Cipher PANEL</title>
 
 <style>
-body {
-  margin: 0;
-  font-family: Arial;
-  background: #0b0b0b;
-  color: white;
+body{
+    margin:0;
+    font-family:Arial;
+    background: radial-gradient(circle at top,#2a004d,#000);
+    color:white;
+    overflow:hidden;
 }
 
-/* NAV */
-.nav {
-  display: flex;
-  justify-content: space-between;
-  padding: 15px 20px;
-  background: black;
-  position: sticky;
-  top: 0;
+/* LOGIN */
+#loginScreen{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
 }
 
-.logo {
-  font-size: 22px;
-  font-weight: bold;
+.card{
+    width:360px;
+    padding:30px;
+    border-radius:16px;
+    background:rgba(255,255,255,0.05);
+    backdrop-filter:blur(20px);
+    box-shadow:0 0 40px rgba(160,0,255,0.3);
+    animation:fade 0.5s ease;
 }
 
-.cart {
-  background: #111;
-  padding: 8px 12px;
-  border-radius: 8px;
-  cursor: pointer;
+input{
+    width:100%;
+    padding:12px;
+    margin:8px 0;
+    border:none;
+    border-radius:8px;
+    background:#111;
+    color:white;
 }
 
-/* SEARCH */
-.searchBar {
-  display: flex;
-  justify-content: center;
-  padding: 15px;
+button{
+    width:100%;
+    padding:12px;
+    margin-top:8px;
+    border:none;
+    border-radius:8px;
+    background:#7c3cff;
+    color:white;
+    cursor:pointer;
+}
+button:hover{background:#5d1fff;}
+
+/* APP */
+#app{
+    display:none;
+    height:100vh;
 }
 
-.searchBar input {
-  width: 60%;
-  padding: 10px;
-  border-radius: 8px;
-  border: none;
+/* SIDEBAR */
+.sidebar{
+    position:fixed;
+    left:0;
+    top:0;
+    width:240px;
+    height:100%;
+    background:rgba(255,255,255,0.04);
+    backdrop-filter:blur(20px);
+    padding:20px;
 }
 
-/* TABS */
-.tabs {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  flex-wrap: wrap;
+.brand{
+    font-size:18px;
+    font-weight:bold;
+    margin-bottom:10px;
 }
 
-.tab {
-  background: #111;
-  padding: 8px 14px;
-  border-radius: 8px;
-  cursor: pointer;
+.user{
+    font-size:12px;
+    color:#aaa;
+    margin-bottom:20px;
 }
 
-.tab.active {
-  background: #00ff88;
-  color: black;
+.nav button{
+    margin:5px 0;
 }
 
-/* PRODUCTS */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 20px;
-  padding: 20px;
+/* MAIN */
+.main{
+    margin-left:260px;
+    padding:20px;
 }
 
-.card {
-  background: #151515;
-  padding: 15px;
-  border-radius: 12px;
-  border: 1px solid #222;
+.panel{
+    display:none;
+    animation:fade 0.3s ease;
 }
 
-.card img {
-  width: 100%;
-  border-radius: 10px;
+.active{
+    display:block;
 }
 
-.price {
-  color: #00ff88;
-  font-weight: bold;
+.box{
+    background:rgba(255,255,255,0.05);
+    padding:15px;
+    border-radius:12px;
+    margin-bottom:12px;
 }
 
-button {
-  width: 100%;
-  padding: 10px;
-  margin-top: 10px;
-  border: none;
-  background: #00ff88;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
+/* FOOTER */
+.footer{
+    position:fixed;
+    bottom:10px;
+    right:15px;
+    font-size:11px;
+    color:#666;
 }
 
-/* CART */
-.cart-panel {
-  position: fixed;
-  right: -340px;
-  top: 0;
-  width: 340px;
-  height: 100%;
-  background: #111;
-  padding: 20px;
-  transition: 0.3s;
+@keyframes fade{
+    from{opacity:0;transform:translateY(10px);}
+    to{opacity:1;transform:translateY(0);}
 }
-
-.cart-panel.open {
-  right: 0;
-}
-
-/* MODAL */
-.modal {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.85);
-}
-
-.modal-content {
-  background: #1a1a1a;
-  padding: 20px;
-  margin: 10% auto;
-  width: 320px;
-  border-radius: 12px;
-  text-align: center;
-}
-
-.pay {
-  background: #333;
-  padding: 10px;
-  margin-top: 10px;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.pay.paypal { background: #003087; }
-.pay.robux { background: #ff9900; }
 </style>
 </head>
 
 <body>
 
-<div class="nav">
-  <div class="logo">Fang.wtf</div>
-  <div class="cart" onclick="toggleCart()">🛒 (<span id="count">0</span>)</div>
+<!-- LOGIN -->
+<div id="loginScreen">
+    <div class="card">
+        <h2>Cipher LOGIN</h2>
+        <input id="user" placeholder="Username">
+        <input id="pass" type="password" placeholder="Password">
+        <button onclick="login()">Login</button>
+    </div>
 </div>
 
-<!-- SEARCH -->
-<div class="searchBar">
-  <input id="search" placeholder="Search products..." onkeyup="search()">
+<!-- APP -->
+<div id="app">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="brand">Cipher PANEL</div>
+        <div class="user" id="displayUser"></div>
+
+        <div class="nav">
+            <button onclick="show('dash')">Dashboard</button>
+            <button onclick="show('cloud')">Cloud</button>
+            <button onclick="show('shop')">Products</button>
+        </div>
+
+        <button onclick="logout()">Logout</button>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+        <!-- DASH -->
+        <div id="dash" class="panel active">
+
+            <div class="box">
+                <h3>License</h3>
+                <input id="licenseInput" placeholder="Enter license">
+                <button onclick="checkLicense()">Verify</button>
+                <p id="status"></p>
+            </div>
+
+            <div class="box">
+                <h3>Key</h3>
+                <p id="key">******</p>
+                <button onclick="toggleKey()">Show Key</button>
+            </div>
+
+        </div>
+
+        <!-- CLOUD -->
+        <div id="cloud" class="panel">
+            <div class="box">
+                <h3>Cloud Notes</h3>
+                <textarea id="notes" style="width:100%;height:200px;background:#111;color:white;border:none;"></textarea>
+            </div>
+        </div>
+
+        <!-- PRODUCTS -->
+        <div id="shop" class="panel">
+
+            <div class="box">
+                Product A
+                <button onclick="download()">Download</button>
+            </div>
+
+            <div class="box">
+                Product B
+                <button onclick="download()">Download</button>
+            </div>
+
+        </div>
+
+    </div>
 </div>
 
-<!-- TABS -->
-<div class="tabs">
-  <div class="tab active" onclick="filter('all', event)">All</div>
-  <div class="tab" onclick="filter('keys', event)">Keys</div>
-  <div class="tab" onclick="filter('scripts', event)">Scripts</div>
-  <div class="tab" onclick="filter('configs', event)">Configs</div>
-  <div class="tab" onclick="filter('extras', event)">Extras</div>
-</div>
-
-<!-- PRODUCTS -->
-<div class="grid">
-
-  <div class="card" data-name="basic key" data-category="keys">
-    <img src="https://via.placeholder.com/300">
-    <h3>Basic Key</h3><p class="price">$3</p>
-    <button onclick="add('Basic Key',3)">Buy</button>
-  </div>
-
-  <div class="card" data-name="premium key" data-category="keys">
-    <img src="https://via.placeholder.com/300">
-    <h3>Premium Key</h3><p class="price">$7</p>
-    <button onclick="add('Premium Key',7)">Buy</button>
-  </div>
-
-  <div class="card" data-name="lifetime key" data-category="keys">
-    <img src="https://via.placeholder.com/300">
-    <h3>Lifetime Key</h3><p class="price">$25</p>
-    <button onclick="add('Lifetime Key',25)">Buy</button>
-  </div>
-
-  <div class="card" data-name="vip key bundle" data-category="keys">
-    <img src="https://via.placeholder.com/300">
-    <h3>VIP Key Bundle with 10 Keys for you friends</h3><p class="price">$50</p>
-    <button onclick="add('VIP Key Bundle',15)">Buy</button>
-  </div>
-
-  <div class="card" data-name="aimbot script" data-category="scripts">
-    <img src="https://via.placeholder.com/300">
-    <h3>Anti Cheat Bypass Buy this And Execute Before using any of the others/h3><p class="price">$15</p>
-    <button onclick="add('Aimbot Script',15)">Buy</button>
-  </div>
-
-  <div class="card" data-name="esp script" data-category="scripts">
-    <img src="https://via.placeholder.com/300">
-    <h3>Da Hood Hvh Script</h3><p class="price">$12</p>
-    <button onclick="add('ESP Script',12)">Buy</button>
-  </div>
-
-  <div class="card" data-name="silent aim" data-category="scripts">
-    <img src="https://via.placeholder.com/300">
-    <h3>Client Settings Script</h3><p class="price">$18</p>
-    <button onclick="add('Silent Aim',18)">Buy</button>
-  </div>
-
-  <div class="card" data-name="trigger bot" data-category="scripts">
-    <img src="https://via.placeholder.com/300">
-    <h3>Fang 1.4.0 Script</h3><p class="price">$10</p>
-    <button onclick="add('Trigger Bot',10)">Buy</button>
-  </div>
-
-  <div class="card" data-name="movement script" data-category="scripts">
-    <img src="https://via.placeholder.com/300">
-    <h3>Fang 1.1.0 Script</h3><p class="price">$8</p>
-    <button onclick="add('Movement Script',8)">Buy</button>
-  </div>
-
-  <div class="card" data-name="fortnite config" data-category="configs">
-    <img src="https://via.placeholder.com/300">
-    <h3>Semi Legit</h3><p class="price">$5</p>
-    <button onclick="add('Fortnite Config',5)">Buy</button>
-  </div>
-
-  <div class="card" data-name="roblox config" data-category="configs">
-    <img src="https://via.placeholder.com/300">
-    <h3>Blatant Config</h3><p class="price">$6</p>
-    <button onclick="add('Roblox Config',6)">Buy</button>
-  </div>
-
-  <div class="card" data-name="fps boost config" data-category="configs">
-    <img src="https://via.placeholder.com/300">
-    <h3>Semi Blatant And Legit Config Both come together</h3><p class="price">$4</p>
-    <button onclick="add('FPS Boost Config',4)">Buy</button>
-  </div>
-
-  <div class="card" data-name="ui pack" data-category="extras">
-    <img src="https://via.placeholder.com/300">
-    <h3>Extenal [Not on sale yet]</h3><p class="price">$9</p>
-    <button onclick="add('UI Pack',30$)">Buy</button>
-  </div>
-
-  <div class="card" data-name="mod menu pack" data-category="extras">
-    <img src="https://via.placeholder.com/300">
-    <h3>Extenal Souce</h3><p class="price">$150</p>
-    <button onclick="add('Mod Menu Pack',20)">Buy</button>
-  </div>
-
-</div>
-
-<!-- CART -->
-<div class="cart-panel" id="cart">
-  <h2>Cart</h2>
-  <div id="items"></div>
-  <h3>Total: $<span id="total">0</span></h3>
-  <button onclick="checkout()">Checkout</button>
-</div>
-
-<!-- PAYMENT MODAL -->
-<div class="modal" id="modal">
-  <div class="modal-content">
-    <h2>Payment Methods</h2>
-
-    <div class="pay" onclick="cashapp()">CashApp</div>
-    <div class="pay" onclick="bitcoin()">Bitcoin</div>
-    <div class="pay paypal" onclick="paypal()">PayPal</div>
-    <div class="pay robux" onclick="robux()">Robux</div>
-
-  </div>
-</div>
+<div class="footer">Cipher SYSTEM • Local Storage Build</div>
 
 <script>
-let cart = [];
-let total = 0;
-let current = "all";
+let currentUser = "";
 
-/* ADD */
-function add(name, price){
-  cart.push({name, price});
-  total += price;
-  document.getElementById("count").innerText = cart.length;
-  render();
+/* DB */
+function db(){return JSON.parse(localStorage.getItem("users")||"{}");}
+function save(d){localStorage.setItem("users",JSON.stringify(d));}
+
+/* LOGIN */
+function login(){
+    let u=user.value,p=pass.value;
+    let d=db();
+
+    if(!d[u]||d[u].pass!==p){
+        alert("Invalid login");
+        return;
+    }
+
+    currentUser=u;
+    localStorage.setItem("logged",u);
+
+    start();
 }
 
-/* FIXED RENDER */
-function render(){
-  document.getElementById("items").innerHTML =
-    cart.map(i => `<p>${i.name} - $${i.price}</p>`).join("");
-  document.getElementById("total").innerText = total;
+function start(){
+    loginScreen.style.display="none";
+    app.style.display="block";
+    displayUser.innerText=currentUser;
+
+    notes.value=localStorage.getItem("n_"+currentUser)||"";
 }
 
-/* CART */
-function toggleCart(){
-  document.getElementById("cart").classList.toggle("open");
+/* AUTO LOGIN */
+if(localStorage.getItem("logged")){
+    currentUser=localStorage.getItem("logged");
+    start();
 }
 
-/* CHECKOUT */
-function checkout(){
-  document.getElementById("modal").style.display = "block";
+/* NAV */
+function show(id){
+    document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
 }
 
-/* PAYMENTS */
-function cashapp(){
-  window.location = "https://cash.app/$pluhmarcel";
+/* DEVICE */
+function dev(){
+    return btoa(navigator.userAgent+screen.width+screen.height);
 }
 
-function bitcoin(){
-  window.location = "bitcoin:YOURADDRESS";
+/* LICENSE */
+function checkLicense(){
+    let d=db();
+    let u=d[currentUser];
+    if(!u)return;
+
+    let input=licenseInput.value;
+
+    if(input!==u.license){
+        status.innerText="Invalid License";
+        return;
+    }
+
+    if(!u.device){
+        u.device=dev();
+        u.whitelisted=true;
+    }
+
+    if(u.device!==dev()){
+        status.innerText="Device blocked";
+        return;
+    }
+
+    u.whitelisted=true;
+    save(d);
+
+    status.innerText="Access Granted";
 }
 
-function paypal(){
-  window.location = "https://paypal.me/yourlink";
+/* KEY */
+function toggleKey(){
+    let u=db()[currentUser];
+    if(!u?.whitelisted)return alert("No access");
+    key.innerText=u.license||"NO KEY";
 }
 
-function robux(){
-  window.location = "https://www.roblox.com/game-pass/1785359307/Fang";
+/* DOWNLOAD */
+function download(){
+    let u=db()[currentUser];
+    if(!u?.whitelisted)return alert("Not allowed");
+
+    let a=document.createElement("a");
+    a.href=URL.createObjectURL(new Blob(["File: "+currentUser]));
+    a.download="file.txt";
+    a.click();
 }
 
-/* FILTER */
-function filter(type, e){
-  current = type;
-  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
-  e.target.classList.add("active");
-  apply();
+/* NOTES */
+notes.oninput=()=>{
+    localStorage.setItem("n_"+currentUser,notes.value);
 }
 
-/* SEARCH */
-function search(){
-  apply();
-}
-
-function apply(){
-  let q = document.getElementById("search").value.toLowerCase();
-
-  document.querySelectorAll(".card").forEach(card=>{
-    let name = card.dataset.name;
-    let cat = card.dataset.category;
-
-    let ok = name.includes(q) && (current==="all" || cat===current);
-    card.style.display = ok ? "block" : "none";
-  });
+/* LOGOUT */
+function logout(){
+    localStorage.removeItem("logged");
+    location.reload();
 }
 </script>
 
